@@ -1,8 +1,236 @@
 /* ================================================================= */
-/* ADDITIONAL GRID EXTENSIONS AND MOBILE ALIGNMENT OVERHAUL SYSTEM */
+/* 1. CORE VARIABLE DEFINITIONS & SYSTEM RESETS                      */
 /* ================================================================= */
+:root {
+    --bg-dark-base: #0b0f19;
+    --bg-dark-surface: #131926;
+    --bg-dark-panel: #1a2236;
+    --text-primary: #ffffff;
+    --text-muted: #8fa0b7;
+    
+    --glow-purple: #7c4dff;
+    --glow-blue: #38bdf8;
+    --glow-green: #34d399;
+    --glow-orange: #fb923c;
+    
+    --accent-red: #c2272d;
+    --white: #ffffff;
+    --card-bg: #fdfaf9; 
+}
 
-/* Vertically aligned flex structural containers */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-dark-base);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+/* ================================================================= */
+/* 2. LIGHT CONTAINER LOGIN VIEW (CENTERED OVER GRADIANT)            */
+/* ================================================================= */
+body.login-body { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh;
+    background: linear-gradient(180deg, #1e293b 0%, #b91c1c 100%); 
+    padding: 2rem 1rem;
+}
+
+.login-card { 
+    position: relative;
+    background: var(--card-bg); 
+    padding: 4.5rem 2rem 2.5rem 2rem; 
+    border-radius: 36px; 
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); 
+    width: 100%; 
+    max-width: 410px; 
+    text-align: center; 
+    margin-top: 40px; 
+}
+
+.logo-top-container {
+    position: absolute;
+    top: -45px; 
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--card-bg);
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.college-logo-top { 
+    width: 85px; 
+    height: 85px; 
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+/* Updated selector to cleanly catch h2 in login.html */
+.brand-header h2 {
+    color: #913d40;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 15px 0 4px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.brand-header h4 {
+    color: #000000;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.brand-header .motto { 
+    font-size: 0.9rem; 
+    font-style: italic; 
+    color: #64748b; 
+    margin-bottom: 2rem; 
+    margin-top: 0;
+}
+
+.input-container { position: relative; margin-bottom: 1.2rem; width: 100%; }
+.input-icon { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1.1rem; }
+.input-container input { width: 100%; padding: 1.1rem 1rem 1.1rem 3rem; border: 1px solid #e2e8f0; border-radius: 18px; font-size: 1.05rem; background-color: var(--white); color: #1e293b; }
+.input-container input:focus { border-color: var(--accent-red); outline: none; box-shadow: 0 0 0 3px rgba(194, 39, 45, 0.1); }
+
+.btn { display: inline-block; border: none; cursor: pointer; text-align: center; text-decoration: none; }
+.btn-signin { display: flex; align-items: center; justify-content: center; width: 100%; padding: 1rem 1.5rem; background: var(--accent-red); color: var(--white); border-radius: 18px; font-size: 1rem; font-weight: 700; margin-top: 1.5rem; }
+.btn-arrow { margin-left: 0.6rem; font-size: 0.9rem; }
+.card-footer { margin-top: 2rem; padding-top: 0.5rem; border-top: 1px solid #e2e8f0; }
+.card-footer p { font-size: 0.85rem; color: #1f2937; line-height: 1.4; margin-bottom: 0; }
+
+/* ================================================================= */
+/* 3. DARK THEME DASHBOARD CORE WORKSPACE                            */
+/* ================================================================= */
+body.dashboard-body {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--bg-dark-base);
+    overflow-x: hidden;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: var(--bg-dark-surface);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    border-right: 1px solid #1e293b;
+    flex-shrink: 0;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;        
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 2.5rem;
+}
+
+.sidebar-logo {
+    font-size: 1.5rem;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex-grow: 1;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.menu-item i {
+    font-size: 1.1rem;
+    width: 20px;
+}
+
+.menu-item:hover, .menu-item.active {
+    color: var(--text-primary);
+    background-color: rgba(124, 77, 255, 0.15);
+}
+
+.menu-item.active {
+    background-color: #251b4d;
+    color: #a78bfa;
+}
+
+.sidebar-quote {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--glow-purple);
+}
+.sidebar-quote i { color: var(--glow-purple); margin-bottom: 0.25rem; display: block; }
+.sidebar-quote p { font-size: 0.8rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin: 0; }
+
+.btn-logout-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #ef4444;
+    text-decoration: none;
+    padding: 0.75rem;
+    border-radius: 10px;
+    font-weight: 600;
+    background: rgba(239, 68, 68, 0.08);
+    transition: background 0.2s;
+}
+.btn-logout-sidebar:hover { background: rgba(239, 68, 68, 0.18); }
+
+/* ================================================================= */
+/* 4. CONTENT WRAPPERS, MODULE TABLES & NOTICE SHEETS               */
+/* ================================================================= */
+.main-content {
+    flex-grow: 1;
+    padding: 2.5rem;
+    max-width: calc(100% - 260px);
+    overflow-y: auto;
+}
+
+.content-header {
+    margin-bottom: 2.5rem;
+}
+.welcome-text h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; margin-top: 0; }
+.welcome-text p { color: var(--text-muted); font-size: 0.95rem; margin: 0; }
+
+.workspace-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 2rem;
+    align-items: start;
+}
+
 .panel-column-stack {
     display: flex;
     flex-direction: column;
@@ -10,26 +238,91 @@
     width: 100%;
 }
 
-/* Force elements inside input containers to map out beautifully */
-textarea {
-    font-family: inherit;
-    resize: vertical;
+.panel {
+    background-color: var(--bg-dark-surface);
+    border-radius: 24px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-/* --- Mobile Phone Responsive Breakpoint System Remappings --- */
+.panel h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.form-group { margin-bottom: 1.25rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+.form-group input, .form-group textarea { width: 100%; padding: 0.85rem 1rem; background-color: var(--bg-dark-panel); border: 1px solid #26334d; border-radius: 12px; color: var(--text-primary); font-size: 0.95rem; }
+.form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--glow-blue); }
+
+textarea { font-family: inherit; resize: vertical; }
+
+.btn-action-glow {
+    width: 100%;
+    padding: 0.9rem;
+    background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+    color: var(--white);
+    border: none;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(109, 40, 217, 0.4);
+    transition: transform 0.2s;
+}
+.btn-action-glow:hover { transform: translateY(-1px); }
+
+.table-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th { padding: 1rem; border-bottom: 2px solid #1e293b; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
+td { padding: 1rem; border-bottom: 1px solid #1e293b; font-size: 0.95rem; color: #e2e8f0; vertical-align: middle; }
+
+.btn-secondary-action {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    border: 1px solid #26334d;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.btn-secondary-action:hover { background: rgba(255, 255, 255, 0.1); }
+
+.badge { display: inline-block; padding: 0.25rem 0.6rem; font-size: 0.75rem; font-weight: 700; border-radius: 6px; text-transform: uppercase; }
+.badge-lecturer { background-color: rgba(56, 189, 248, 0.15); color: var(--glow-blue); }
+.badge-student { background-color: rgba(52, 211, 153, 0.15); color: var(--glow-green); }
+
+.attendance-check-label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 600; }
+.attendance-check-label input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--glow-green); }
+
+.error-msg { color: #f87171; font-size: 0.85rem; margin-top: 1rem; text-align: center; }
+
+/* Real-time Campus Notices Layout Elements */
+.notice-board-feed { display: flex; flex-direction: column; gap: 1rem; }
+.notice-strip { background: var(--bg-dark-panel); padding: 1.25rem; border-radius: 14px; border-left: 4px solid var(--glow-orange); }
+.notice-strip h4 { margin: 0 0 0.5rem 0; color: #ffffff; font-size: 1.05rem; font-weight: 700; }
+.notice-strip p { margin: 0 0 0.75rem 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; }
+.notice-date { font-size: 0.75rem; color: var(--glow-orange); font-weight: 600; display: block; }
+
+/* ================================================================= */
+/* 5. POWERFUL MOBILE RESPONSIVE STRUCTURES TRANSITIONS             */
+/* ================================================================= */
 @media (max-width: 1100px) {
-    .metrics-grid { 
-        grid-template-columns: repeat(2, 1fr) !important; 
-    }
-    .workspace-grid { 
-        grid-template-columns: 1fr !important; 
-    }
+    .workspace-grid { grid-template-columns: 1fr !important; }
 }
 
 @media (max-width: 768px) {
-    body.dashboard-body { 
-        flex-direction: column !important; 
-    }
+    body.dashboard-body { flex-direction: column !important; }
     
     .sidebar { 
         width: 100% !important; 
@@ -38,44 +331,18 @@ textarea {
         padding: 1.25rem !important;
     }
     
-    .sidebar-brand {
-        margin-bottom: 1rem !important;
-    }
-    
-    .sidebar-quote {
-        display: none !important; /* Hide quote section inside small phones for clean spacing navigation profiles */
-    }
+    .sidebar-brand { margin-bottom: 1rem !important; }
+    .sidebar-quote { display: none !important; }
     
     .main-content { 
         max-width: 100% !important; 
         padding: 1.25rem !important; 
     }
     
-    .metrics-grid { 
-        grid-template-columns: 1fr !important; 
-        gap: 1rem !important;
-    }
+    .workspace-grid { gap: 1rem !important; }
+    .panel { padding: 1.25rem !important; border-radius: 16px !important; }
     
-    .workspace-grid { 
-        grid-template-columns: 1fr !important; 
-        gap: 1rem !important;
-    }
-    
-    .panel {
-        padding: 1.25rem !important;
-        border-radius: 16px !important;
-    }
-    
-    table {
-        font-size: 0.85rem !important;
-    }
-    
-    th, td {
-        padding: 0.75rem 0.5rem !important;
-    }
-    
-    .btn-action-glow {
-        padding: 0.8rem !important;
-        font-size: 0.95rem !important;
-    }
+    table { font-size: 0.85rem !important; }
+    th, td { padding: 0.75rem 0.5rem !important; }
+    .btn-action-glow { padding: 0.8rem !important; font-size: 0.95rem !important; }
 }
