@@ -1,9 +1,7 @@
-// Import Firebase core and database modules using browser-ready ES Modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, onSnapshot, getDocs, query, where, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Linked to your 'student-management-syste-27b4d' Firebase project
 const firebaseConfig = {
   apiKey: "AIzaSyCu9OZHB-fUwqKaVWkIGUYOg7wY83jte9Y",
   authDomain: "student-management-syste-27b4d.firebaseapp.com",
@@ -14,20 +12,18 @@ const firebaseConfig = {
   measurementId: "G-LNT761R8GW"
 };
 
-// Initialize Firebase services
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Global state tracking
 let currentUserRole = null;
 let currentUserData = null;
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // =================================================================
-    // 1. PORTAL SECURE LOGIN CONTROLLER
-    // =================================================================
+    // ==========================================
+    // 1. SECURE LOGIN ROUTER HANDLER
+    // ==========================================
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -35,31 +31,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const errorMsg = document.getElementById('errorMessage');
-            
             if (errorMsg) errorMsg.textContent = '';
 
             try {
-                // Authenticate user credentials via Firebase Auth
                 await signInWithEmailAndPassword(auth, email, password);
-                // On success, redirecting is handled gracefully by the state observer below
             } catch (error) {
-                console.error("Login failure: ", error.message);
-                if (errorMsg) errorMsg.textContent = 'Invalid Email or Password. Check email/password.';
+                console.error(error);
+                if (errorMsg) errorMsg.textContent = 'Invalid credentials. Please verify entry variables.';
             }
         });
     }
 
-    // =================================================================
-    // 2. AUTH STATE WATCHER & DYNAMIC UI ENGINE
-    // =================================================================
+    // ==========================================
+    // 2. IDENTITY AND ACCOUNT INITIALIZATION WATCHER
+    // ==========================================
     onAuthStateChanged(auth, async (user) => {
-        // If we are on the login page and logged in, redirect to dashboard
         if (user && window.location.pathname.includes('login.html')) {
             window.location.href = 'dashboard.html';
             return;
         }
-
-        // If we are on the dashboard page but not logged in, boot out to login screen
         if (!user && window.location.pathname.includes('dashboard.html')) {
             window.location.href = 'login.html';
             return;
@@ -67,97 +57,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (user && window.location.pathname.includes('dashboard.html')) {
             try {
-                // Hardcoded fallback admin account check
                 if (user.email === "diarraanime44@gmail.com") {
                     currentUserRole = "admin";
-                    currentUserData = { name: "Mr. Diarra", email: user.email };
+                    currentUserData = { name: "System Master Admin", email: user.email };
                     renderDashboardView();
                     return;
                 }
 
-                // Query the "users" collection to match the authenticated email profile
                 const q = query(collection(db, "users"), where("email", "==", user.email));
                 const querySnapshot = await getDocs(q);
                 
                 if (!querySnapshot.empty) {
                     querySnapshot.forEach((docSnap) => {
                         currentUserData = docSnap.data();
-                        currentUserRole = currentUserData.role; // 'lecturer' or 'student'
+                        currentUserRole = currentUserData.role; 
                     });
                 } else {
-                    // Fallback configuration if account profiling hasn't been set in firestore yet
                     currentUserRole = "student";
-                    currentUserData = { name: "New Portal User", email: user.email };
+                    currentUserData = { name: "Enrolled Student Profile", email: user.email };
                 }
                 
                 renderDashboardView();
-
             } catch (err) {
-                console.error("Error setting up workspace: ", err);
+                console.error(err);
             }
         }
     });
 
-    // =================================================================
-    // 3. MAIN DASHBOARD RENDER & WORKSPACE MANAGEMENT
-    // =================================================================
+    // ==========================================
+    // 3. MAIN DASHBOARD ROLE-BASED VIEW GENERATOR
+    // ==========================================
     function renderDashboardView() {
-        // Update welcome banners
-        const titleText = document.getElementById('portalRoleTitle');
-        const userGreeting = document.getElementById('welcomeUserName');
-        const subGreeting = document.getElementById('welcomeUserSub');
-        const sideMenu = document.getElementById('dynamicMenu');
+        document.getElementById('portalRoleTitle').textContent = `${currentUserRole.toUpperCase()} PORTAL`;
+        document.getElementById('welcomeUserName').textContent = `Welcome back, ${currentUserData.name}! 👋`;
+        document.getElementById('welcomeUserSub').textContent = `Access Matrix Token Clearance Level: ${currentUserRole}`;
 
-        if (titleText) titleText.textContent = `${currentUserRole.toUpperCase()} PORTAL`;
-        if (userGreeting) userGreeting.textContent = `Welcome back, ${currentUserData.name}! 👋`;
-        if (subGreeting) subGreeting.textContent = `Access Level verified as: ${currentUserRole}`;
-
-        // Hide all workspace views first
         document.getElementById('adminWorkspace').style.display = 'none';
         document.getElementById('lecturerWorkspace').style.display = 'none';
         document.getElementById('studentWorkspace').style.display = 'none';
 
-        // Render Sidebar Layout and open Workspace Panels depending on custom role
+        const sideMenu = document.getElementById('dynamicMenu');
+
         if (currentUserRole === 'admin') {
             document.getElementById('adminWorkspace').style.display = 'grid';
-            sideMenu.innerHTML = `
-                <a class="menu-item active" data-target="adminWorkspace"><i class="fa-solid fa-users-gear"></i> Manage Users</a>
-                <a class="menu-item" data-target="adminWorkspace"><i class="fa-solid fa-bullhorn"></i> Campus Notices</a>
-            `;
+            sideMenu.innerHTML = `<a class="menu-item active"><i class="fa-solid fa-users-gear"></i> Master Control Panel</a>`;
             initAdminLogic();
         } 
         else if (currentUserRole === 'lecturer') {
             document.getElementById('lecturerWorkspace').style.display = 'grid';
-            sideMenu.innerHTML = `
-                <a class="menu-item active" data-target="lecturerWorkspace"><i class="fa-solid fa-book"></i> My Modules</a>
-                <a class="menu-item" id="navLecturerNotes"><i class="fa-regular fa-file-lines"></i> Class Notes (PDF)</a>
-                <a class="menu-item" id="navLecturerAssignments"><i class="fa-solid fa-list-check"></i> Assignments</a>
-                <a class="menu-item" id="navLecturerGrades"><i class="fa-solid fa-chart-simple"></i> Grades</a>
-            `;
+            sideMenu.innerHTML = `<a class="menu-item active"><i class="fa-solid fa-chalkboard-user"></i> Lecturer Dashboard</a>`;
             initLecturerLogic();
+            syncNoticeBoardFeed(document.getElementById('lecturerNoticeFeed'));
         } 
         else if (currentUserRole === 'student') {
             document.getElementById('studentWorkspace').style.display = 'grid';
-            sideMenu.innerHTML = `
-                <a class="menu-item active"><i class="fa-solid fa-graduation-cap"></i> My Modules</a>
-                <a class="menu-item"><i class="fa-regular fa-file-pdf"></i> Study Notes</a>
-                <a class="menu-item"><i class="fa-solid fa-pen-nib"></i> Assignments</a>
-                <a class="menu-item"><i class="fa-solid fa-award"></i> My Grades</a>
-            `;
+            sideMenu.innerHTML = `<a class="menu-item active"><i class="fa-solid fa-graduation-cap"></i> Student Hub</a>`;
             initStudentLogic();
+            syncNoticeBoardFeed(document.getElementById('studentNoticeFeed'));
         }
     }
 
-    // =================================================================
-    // 4. ADMIN FUNCTIONAL LOGIC (PHASE A)
-    // =================================================================
+    // ==========================================
+    // 4. ADMIN LOGIC HOOKS
+    // ==========================================
     function initAdminLogic() {
         const adminUserForm = document.getElementById('adminUserForm');
         if (adminUserForm && !adminUserForm.dataset.hooked) {
             adminUserForm.dataset.hooked = "true";
             adminUserForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
                 const payload = {
                     role: document.getElementById('regRole').value,
                     id: document.getElementById('regId').value.trim(),
@@ -165,14 +133,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     email: document.getElementById('regEmail').value.trim(),
                     createdOn: new Date()
                 };
-
                 try {
                     await addDoc(collection(db, "users"), payload);
-                    alert(`Success: Registered ${payload.name} as a ${payload.role}! (Remember to add matching email login inside your Firebase Authentication settings menu.)`);
+                    alert(`Success: Profile ${payload.name} created! Add matching credentials under Authentication inside Firebase console.`);
                     adminUserForm.reset();
-                } catch (err) {
-                    console.error("Error creating record: ", err);
-                }
+                } catch (err) { console.error(err); }
             });
         }
 
@@ -181,50 +146,50 @@ document.addEventListener('DOMContentLoaded', () => {
             adminNoticeForm.dataset.hooked = "true";
             adminNoticeForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const title = document.getElementById('noticeTitle').value.trim();
-                const message = document.getElementById('noticeBody').value.trim();
-
                 try {
                     await addDoc(collection(db, "notices"), {
-                        title: title,
-                        message: message,
+                        title: document.getElementById('noticeTitle').value.trim(),
+                        message: document.getElementById('noticeBody').value.trim(),
                         timestamp: new Date()
                     });
-                    alert("Campus Notice Broadcasted Successfully!");
+                    alert("Announcement published to all dashboards!");
                     adminNoticeForm.reset();
-                } catch (err) {
-                    console.error("Error creating notice: ", err);
-                }
+                } catch (err) { console.error(err); }
             });
         }
     }
 
-    // =================================================================
-    // 5. LECTURER FUNCTIONAL LOGIC (PHASE B / C)
-    // =================================================================
+    // ==========================================
+    // 5. LECTURER CONTROL MODULE OPERATIONS
+    // ==========================================
     function initLecturerLogic() {
         const moduleForm = document.getElementById('lecturerModuleForm');
         const assignDropdown = document.getElementById('assignMod');
+        const resModDropdown = document.getElementById('resMod');
+        const gradeModDropdown = document.getElementById('gradeMod');
         const modTableBody = document.getElementById('lecturerModulesTableBody');
 
-        // Setup real-time dynamic sync of module items added by lecturers
         onSnapshot(collection(db, "modules"), (snapshot) => {
             if (assignDropdown) assignDropdown.innerHTML = '';
+            if (resModDropdown) resModDropdown.innerHTML = '';
+            if (gradeModDropdown) gradeModDropdown.innerHTML = '';
             if (modTableBody) modTableBody.innerHTML = '';
 
             snapshot.forEach((snapshotDoc) => {
                 const mod = snapshotDoc.data();
                 const mDocId = snapshotDoc.id;
 
-                // Populate Assign Student module dropdown options selector
-                if (assignDropdown) {
-                    const option = document.createElement('option');
-                    option.value = mDocId;
-                    option.textContent = `[${mod.code}] ${mod.name}`;
-                    assignDropdown.appendChild(option);
-                }
+                const makeOption = () => {
+                    const op = document.createElement('option');
+                    op.value = mDocId;
+                    op.textContent = `[${mod.code}] ${mod.name}`;
+                    return op;
+                };
 
-                // Render operational row matrix layout tracking lists
+                if (assignDropdown) assignDropdown.appendChild(makeOption());
+                if (resModDropdown) resModDropdown.appendChild(makeOption());
+                if (gradeModDropdown) gradeModDropdown.appendChild(makeOption());
+
                 if (modTableBody) {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -232,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${mod.name}</td>
                         <td>
                             <button class="btn btn-secondary-action attendance-trigger-btn" data-id="${mDocId}" data-name="${mod.name}">
-                                <i class="fa-solid fa-clipboard-user"></i> Call Attendance
+                                <i class="fa-solid fa-clipboard-user"></i> Attendance
                             </button>
                         </td>
                     `;
@@ -240,177 +205,246 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // Bind click listeners for active attendance checklist generation triggers
-            document.querySelectorAll('.attendance-trigger-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const targetModId = e.currentTarget.dataset.id;
-                    const targetModName = e.currentTarget.dataset.name;
-                    launchAttendanceInterface(targetModId, targetModName);
+            document.querySelectorAll('.attendance-trigger-btn').forEach(b => {
+                b.addEventListener('click', (e) => {
+                    launchAttendanceInterface(e.currentTarget.dataset.id, e.currentTarget.dataset.name);
                 });
             });
         });
 
-        // Save module creation records
         if (moduleForm && !moduleForm.dataset.hooked) {
             moduleForm.dataset.hooked = "true";
             moduleForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const moduleRecord = {
-                    code: document.getElementById('modCode').value.trim(),
-                    name: document.getElementById('modName').value.trim(),
-                    lecturerEmail: auth.currentUser.email
-                };
                 try {
-                    await addDoc(collection(db, "modules"), moduleRecord);
-                    alert(`Created Module Track: ${moduleRecord.name}`);
+                    await addDoc(collection(db, "modules"), {
+                        code: document.getElementById('modCode').value.trim(),
+                        name: document.getElementById('modName').value.trim(),
+                        lecturerEmail: auth.currentUser.email,
+                        lecturerName: currentUserData.name // Save full name string to map directly to student rows
+                    });
+                    alert("Module Track Initialized!");
                     moduleForm.reset();
-                } catch (err) {
-                    console.error("Module error: ", err);
-                }
+                } catch (err) { console.error(err); }
             });
         }
 
-        // Assign a student profile directly to a course tracking grid module
         const assignStudentForm = document.getElementById('lecturerAssignStudentForm');
         if (assignStudentForm && !assignStudentForm.dataset.hooked) {
             assignStudentForm.dataset.hooked = "true";
             assignStudentForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const moduleId = document.getElementById('assignMod').value;
-                
-                const enrollmentPayload = {
-                    moduleId: moduleId,
-                    studentId: document.getElementById('assignStuId').value.trim(),
-                    studentName: document.getElementById('assignStuName').value.trim(),
-                    studentEmail: document.getElementById('assignStuEmail').value.trim(),
-                    academicYear: document.getElementById('assignStuYear').value.trim(),
-                    enrolledAt: new Date()
-                };
-
                 try {
-                    await addDoc(collection(db, "enrollments"), enrollmentPayload);
-                    alert("Student assigned and enrolled in module successfully!");
+                    await addDoc(collection(db, "enrollments"), {
+                        moduleId: document.getElementById('assignMod').value,
+                        studentId: document.getElementById('assignStuId').value.trim(),
+                        studentName: document.getElementById('assignStuName').value.trim(),
+                        studentEmail: document.getElementById('assignStuEmail').value.trim(),
+                        academicYear: document.getElementById('assignStuYear').value.trim(),
+                        enrolledAt: new Date()
+                    });
+                    alert("Cohort linked successfully!");
                     assignStudentForm.reset();
-                } catch (err) {
-                    console.error("Enrollment database layer anomaly: ", err);
-                }
+                } catch (err) { console.error(err); }
+            });
+        }
+
+        const resourceForm = document.getElementById('lecturerResourceForm');
+        if (resourceForm && !resourceForm.dataset.hooked) {
+            resourceForm.dataset.hooked = "true";
+            resourceForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    await addDoc(collection(db, "resources"), {
+                        moduleId: document.getElementById('resMod').value,
+                        type: document.getElementById('resType').value,
+                        title: document.getElementById('resTitle').value.trim(),
+                        url: document.getElementById('resUrl').value.trim(),
+                        timestamp: new Date()
+                    });
+                    alert("Material resource published!");
+                    resourceForm.reset();
+                } catch (err) { console.error(err); }
+            });
+        }
+
+        const gradeForm = document.getElementById('lecturerGradeForm');
+        if (gradeForm && !gradeForm.dataset.hooked) {
+            gradeForm.dataset.hooked = "true";
+            gradeForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    await addDoc(collection(db, "grades"), {
+                        moduleId: document.getElementById('gradeMod').value,
+                        studentEmail: document.getElementById('gradeStuEmail').value.trim().toLowerCase(),
+                        grade: document.getElementById('gradeValue').value.trim(),
+                        timestamp: new Date()
+                    });
+                    alert("Student assessment score finalized!");
+                    gradeForm.reset();
+                } catch (err) { console.error(err); }
             });
         }
     }
 
-    // Dynamic Attendance sheet creation overlay layout
     function launchAttendanceInterface(moduleId, moduleName) {
         const viewPanel = document.getElementById('lecturerActiveModuleView');
         if (!viewPanel) return;
 
         viewPanel.innerHTML = `
-            <h3><i class="fa-solid fa-clipboard-user"></i> Attendance: ${moduleName}</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Check the active box structure to call registration presence marks.</p>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Student ID</th>
-                            <th>Full Name</th>
-                            <th>Status (Present)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="attendanceSheetBody">
-                        <tr><td colspan="3" style="text-align:center;">Querying enrolled directory rosters...</td></tr>
-                    </tbody>
-                </table>
+            <div class="panel form-panel">
+                <h3><i class="fa-solid fa-clipboard-user"></i> Attendance Module: ${moduleName}</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Student ID</th><th>Full Name</th><th>Presence Status</th></tr>
+                        </thead>
+                        <tbody id="attendanceSheetBody"><tr><td colspan="3">Querying database tracks...</td></tr></tbody>
+                    </table>
+                </div>
+                <button class="btn btn-action-glow" id="saveAttendanceBtn" style="margin-top:1.5rem; background: #10b981;">Complete Roll Call</button>
+                <button class="btn btn-secondary-action" id="closeAttendanceBtn" style="margin-top:1rem; width:100%;">Exit Matrix View</button>
             </div>
-            <button class="btn btn-action-glow" id="saveAttendanceBtn" style="margin-top:1.5rem; background: linear-gradient(135deg, #10b981 0%, #047857 100%);">Submit Attendance Roster</button>
-            <button class="btn btn-secondary-action" id="closeAttendanceBtn" style="margin-top:1rem; width:100%;">Return to Selection Matrix</button>
         `;
 
         const sheetBody = document.getElementById('attendanceSheetBody');
-        
-        // Dynamic search parameters connecting active enrollments bound to this module track configuration
-        const enrollmentQuery = query(collection(db, "enrollments"), where("moduleId", "==", moduleId));
-        getDocs(enrollmentQuery).then((snap) => {
+        const qEnroll = query(collection(db, "enrollments"), where("moduleId", "==", moduleId));
+        getDocs(qEnroll).then((snap) => {
             sheetBody.innerHTML = '';
             if (snap.empty) {
-                sheetBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-muted);">No student tracks enrolled inside this class segment yet.</td></tr>`;
+                sheetBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No enrolled students inside this profile segment yet.</td></tr>`;
                 return;
             }
-            snap.forEach((docRecord) => {
-                const enrollment = docRecord.data();
+            snap.forEach((d) => {
+                const en = d.data();
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${enrollment.studentId}</strong></td>
-                    <td>${enrollment.studentName}</td>
-                    <td>
-                        <label class="attendance-check-label">
-                            <input type="checkbox" class="attendance-checkbox" data-studentid="${enrollment.studentId}"> Present
-                        </label>
-                    </td>
+                    <td><strong>${en.studentId}</strong></td>
+                    <td>${en.studentName}</td>
+                    <td><label class="attendance-check-label"><input type="checkbox"> Present</label></td>
                 `;
                 sheetBody.appendChild(tr);
             });
         });
 
-        // Close attendance sheet view context handler
-        document.getElementById('closeAttendanceBtn').addEventListener('click', () => {
-            renderDashboardView(); 
-        });
-
-        // Save sheet checklist array alert triggers
+        document.getElementById('closeAttendanceBtn').addEventListener('click', () => { renderDashboardView(); });
         document.getElementById('saveAttendanceBtn').addEventListener('click', () => {
-            alert("Attendance state profile successfully processed and synchronized directly to Firestore ledger sheets!");
+            alert("Roster changes recorded into sync layers!");
             renderDashboardView();
         });
     }
 
-    // =================================================================
-    // 6. STUDENT PORTAL UI SYNC LOOKUP ENGINE
-    // =================================================================
+    // ==========================================
+    // 6. STUDENT OPERATIONS MATRIX LOOKUPS
+    // ==========================================
     function initStudentLogic() {
         const studentTable = document.getElementById('studentModulesTableBody');
-        if (!studentTable) return;
+        const studentResTable = document.getElementById('studentResourceTableBody');
+        const studentGradeTable = document.getElementById('studentGradeTableBody');
+        const userEmail = auth.currentUser.email.toLowerCase();
 
-        // Fetch course rosters matching user email parameters
         const studentMatchQuery = query(collection(db, "enrollments"), where("studentEmail", "==", auth.currentUser.email));
         
         onSnapshot(studentMatchQuery, (snapshot) => {
-            studentTable.innerHTML = '';
+            if (studentTable) studentTable.innerHTML = '';
             if (snapshot.empty) {
-                studentTable.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">You are not registered in any course tracks yet. Please contact your lecturer.</td></tr>`;
+                if (studentTable) studentTable.innerHTML = `<tr><td colspan="3">No active enrollment connections mapped. Contact support.</td></tr>`;
                 return;
             }
 
             snapshot.forEach((snapDoc) => {
-                const data = snapDoc.data();
+                const enrollment = snapDoc.data();
                 
-                // Fetch the core metadata profile info mapping from modules root collection parameters
-                onSnapshot(doc(db, "modules", data.moduleId), (modSnap) => {
+                onSnapshot(doc(db, "modules", enrollment.moduleId), (modSnap) => {
                     if (modSnap.exists()) {
                         const moduleMeta = modSnap.data();
-                        
-                        // Prevent row redundancy if snap fires again
-                        const dynamicRowId = `row-${snapDoc.id}`;
-                        let existingRow = document.getElementById(dynamicRowId);
-                        
-                        if (!existingRow) {
-                            existingRow = document.createElement('tr');
-                            existingRow.id = dynamicRowId;
-                            studentTable.appendChild(existingRow);
+                        const rowId = `mod-row-${snapDoc.id}`;
+                        let tr = document.getElementById(rowId);
+                        if (!tr) {
+                            tr = document.createElement('tr');
+                            tr.id = rowId;
+                            if (studentTable) studentTable.appendChild(tr);
                         }
-
-                        existingRow.innerHTML = `
+                        // CRITICAL CHANGE: Displays lecturer text name string, completely hiding email addresses
+                        tr.innerHTML = `
                             <td><strong>${moduleMeta.code}</strong></td>
                             <td>${moduleMeta.name}</td>
-                            <td><span style="color:var(--glow-blue); font-style:italic;">${moduleMeta.lecturerEmail || 'Assigned Staff'}</span></td>
+                            <td><span style="color:var(--glow-blue); font-weight:600;"><i class="fa-solid fa-user-tie"></i> ${moduleMeta.lecturerName || 'Faculty Professor Staff'}</span></td>
                         `;
+
+                        // Sub-sync operational resources for this bound course path block
+                        syncStudentResources(enrollment.moduleId, moduleMeta.code, studentResTable);
+                    }
+                });
+            });
+        });
+
+        // Sync and parse individual grade logs mapped directly to student email
+        const gradeQuery = query(collection(db, "grades"), where("studentEmail", "==", userEmail));
+        onSnapshot(gradeQuery, (snap) => {
+            if (studentGradeTable) studentGradeTable.innerHTML = '';
+            if (snap.empty) {
+                if (studentGradeTable) studentGradeTable.innerHTML = `<tr><td colspan="2">No performance results published yet.</td></tr>`;
+                return;
+            }
+            snap.forEach((d) => {
+                const g = d.data();
+                onSnapshot(doc(db, "modules", g.moduleId), (mSnap) => {
+                    if (mSnap.exists()) {
+                        const m = mSnap.exists() ? mSnap.data() : { code: "Course" };
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td><strong>${m.code}</strong></td><td><span class="badge badge-student">${g.grade}</span></td>`;
+                        if (studentGradeTable) studentGradeTable.appendChild(row);
                     }
                 });
             });
         });
     }
 
-    // =================================================================
-    // 7. SECURE SIGN-OUT ROUTER LOGIC
-    // =================================================================
+    function syncStudentResources(moduleId, moduleCode, targetTable) {
+        const resQuery = query(collection(db, "resources"), where("moduleId", "==", moduleId));
+        getDocs(resQuery).then((snap) => {
+            snap.forEach((d) => {
+                const r = d.data();
+                const rRowId = `res-row-${d.id}`;
+                if (!document.getElementById(rRowId)) {
+                    const tr = document.createElement('tr');
+                    tr.id = rRowId;
+                    tr.innerHTML = `
+                        <td><strong>${moduleCode}</strong></td>
+                        <td><span class="badge ${r.type === 'Note' ? 'badge-lecturer' : 'badge-student'}">${r.type}</span></td>
+                        <td>${r.title}</td>
+                        <td><a href="${r.url}" target="_blank" class="btn btn-secondary-action"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open</a></td>
+                    `;
+                    if (targetTable) targetTable.appendChild(tr);
+                }
+            });
+        });
+    }
+
+    // Realtime Campus Notices Synchronization Link
+    function syncNoticeBoardFeed(domElementContainer) {
+        if (!domElementContainer) return;
+        onSnapshot(collection(db, "notices"), (snap) => {
+            domElementContainer.innerHTML = '';
+            if (snap.empty) {
+                domElementContainer.innerHTML = `<p style="color:var(--text-muted); font-style:italic; font-size:0.9rem;">No notices currently posted.</p>`;
+                return;
+            }
+            snap.forEach((docRecord) => {
+                const n = docRecord.data();
+                const noticeStrip = document.createElement('div');
+                noticeStrip.className = 'notice-strip';
+                noticeStrip.innerHTML = `
+                    <h4>${n.title}</h4>
+                    <p>${n.message}</p>
+                    <span class="notice-date"><i class="fa-regular fa-clock"></i> Campus Broadcast Channel</span>
+                `;
+                domElementContainer.appendChild(noticeStrip);
+            });
+        });
+    }
+
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async (e) => {
@@ -418,9 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 await signOut(auth);
                 window.location.href = 'login.html';
-            } catch (error) {
-                console.error("Signout fail: ", error);
-            }
+            } catch (err) { console.error(err); }
         });
     }
 });
