@@ -1,2 +1,2 @@
-# IMATT-College-_Student-Management-System
+# IMATT_College_Student_Management_System
 Student Management System
