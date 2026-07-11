@@ -21,9 +21,6 @@ let currentUserData = null;
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ==========================================
-    // 1. SECURE LOGIN ROUTER HANDLER
-    // ==========================================
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -42,9 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================
-    // 2. IDENTITY AND ACCOUNT INITIALIZATION WATCHER
-    // ==========================================
     onAuthStateChanged(auth, async (user) => {
         if (user && window.location.pathname.includes('login.html')) {
             window.location.href = 'dashboard.html';
@@ -84,9 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ==========================================
-    // 3. MAIN DASHBOARD ROLE-BASED VIEW GENERATOR
-    // ==========================================
     function renderDashboardView() {
         document.getElementById('portalRoleTitle').textContent = `${currentUserRole.toUpperCase()} PORTAL`;
         document.getElementById('welcomeUserName').textContent = `Welcome back, ${currentUserData.name}! 👋`;
@@ -117,9 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ==========================================
-    // 4. ADMIN LOGIC HOOKS
-    // ==========================================
     function initAdminLogic() {
         const adminUserForm = document.getElementById('adminUserForm');
         if (adminUserForm && !adminUserForm.dataset.hooked) {
@@ -135,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 try {
                     await addDoc(collection(db, "users"), payload);
-                    alert(`Success: Profile ${payload.name} created! Add matching credentials under Authentication inside Firebase console.`);
+                    alert(`Success: Profile ${payload.name} created!`);
                     adminUserForm.reset();
                 } catch (err) { console.error(err); }
             });
@@ -159,9 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ==========================================
-    // 5. LECTURER CONTROL MODULE OPERATIONS
-    // ==========================================
     function initLecturerLogic() {
         const moduleForm = document.getElementById('lecturerModuleForm');
         const assignDropdown = document.getElementById('assignMod');
@@ -221,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         code: document.getElementById('modCode').value.trim(),
                         name: document.getElementById('modName').value.trim(),
                         lecturerEmail: auth.currentUser.email,
-                        lecturerName: currentUserData.name // Save full name string to map directly to student rows
+                        lecturerName: currentUserData.name
                     });
                     alert("Module Track Initialized!");
                     moduleForm.reset();
@@ -239,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         moduleId: document.getElementById('assignMod').value,
                         studentId: document.getElementById('assignStuId').value.trim(),
                         studentName: document.getElementById('assignStuName').value.trim(),
-                        studentEmail: document.getElementById('assignStuEmail').value.trim(),
+                        studentEmail: document.getElementById('assignStuEmail').value.trim().toLowerCase(),
                         academicYear: document.getElementById('assignStuYear').value.trim(),
                         enrolledAt: new Date()
                     });
@@ -293,17 +278,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         viewPanel.innerHTML = `
             <div class="panel form-panel">
-                <h3><i class="fa-solid fa-clipboard-user"></i> Attendance Module: ${moduleName}</h3>
+                <h3><i class="fa-solid fa-clipboard-user"></i> Attendance: ${moduleName}</h3>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr><th>Student ID</th><th>Full Name</th><th>Presence Status</th></tr>
                         </thead>
-                        <tbody id="attendanceSheetBody"><tr><td colspan="3">Querying database tracks...</td></tr></tbody>
+                        <tbody id="attendanceSheetBody"><tr><td colspan="3">Querying database...</td></tr></tbody>
                     </table>
                 </div>
                 <button class="btn btn-action-glow" id="saveAttendanceBtn" style="margin-top:1.5rem; background: #10b981;">Complete Roll Call</button>
-                <button class="btn btn-secondary-action" id="closeAttendanceBtn" style="margin-top:1rem; width:100%;">Exit Matrix View</button>
+                <button class="btn btn-secondary-action" id="closeAttendanceBtn" style="margin-top:1rem; width:100%;">Exit View</button>
             </div>
         `;
 
@@ -312,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
         getDocs(qEnroll).then((snap) => {
             sheetBody.innerHTML = '';
             if (snap.empty) {
-                sheetBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No enrolled students inside this profile segment yet.</td></tr>`;
+                sheetBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No students enrolled yet.</td></tr>`;
                 return;
             }
             snap.forEach((d) => {
@@ -334,21 +319,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================
-    // 6. STUDENT OPERATIONS MATRIX LOOKUPS
-    // ==========================================
     function initStudentLogic() {
         const studentTable = document.getElementById('studentModulesTableBody');
         const studentResTable = document.getElementById('studentResourceTableBody');
         const studentGradeTable = document.getElementById('studentGradeTableBody');
         const userEmail = auth.currentUser.email.toLowerCase();
 
-        const studentMatchQuery = query(collection(db, "enrollments"), where("studentEmail", "==", auth.currentUser.email));
+        const studentMatchQuery = query(collection(db, "enrollments"), where("studentEmail", "==", userEmail));
         
         onSnapshot(studentMatchQuery, (snapshot) => {
             if (studentTable) studentTable.innerHTML = '';
             if (snapshot.empty) {
-                if (studentTable) studentTable.innerHTML = `<tr><td colspan="3">No active enrollment connections mapped. Contact support.</td></tr>`;
+                if (studentTable) studentTable.innerHTML = `<tr><td colspan="3">No active enrollment connections mapped.</td></tr>`;
                 return;
             }
 
@@ -365,21 +347,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             tr.id = rowId;
                             if (studentTable) studentTable.appendChild(tr);
                         }
-                        // CRITICAL CHANGE: Displays lecturer text name string, completely hiding email addresses
                         tr.innerHTML = `
                             <td><strong>${moduleMeta.code}</strong></td>
                             <td>${moduleMeta.name}</td>
                             <td><span style="color:var(--glow-blue); font-weight:600;"><i class="fa-solid fa-user-tie"></i> ${moduleMeta.lecturerName || 'Faculty Professor Staff'}</span></td>
                         `;
 
-                        // Sub-sync operational resources for this bound course path block
                         syncStudentResources(enrollment.moduleId, moduleMeta.code, studentResTable);
                     }
                 });
             });
         });
 
-        // Sync and parse individual grade logs mapped directly to student email
         const gradeQuery = query(collection(db, "grades"), where("studentEmail", "==", userEmail));
         onSnapshot(gradeQuery, (snap) => {
             if (studentGradeTable) studentGradeTable.innerHTML = '';
@@ -391,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const g = d.data();
                 onSnapshot(doc(db, "modules", g.moduleId), (mSnap) => {
                     if (mSnap.exists()) {
-                        const m = mSnap.exists() ? mSnap.data() : { code: "Course" };
+                        const m = mSnap.data();
                         const row = document.createElement('tr');
                         row.innerHTML = `<td><strong>${m.code}</strong></td><td><span class="badge badge-student">${g.grade}</span></td>`;
                         if (studentGradeTable) studentGradeTable.appendChild(row);
@@ -422,7 +401,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Realtime Campus Notices Synchronization Link
     function syncNoticeBoardFeed(domElementContainer) {
         if (!domElementContainer) return;
         onSnapshot(collection(db, "notices"), (snap) => {
