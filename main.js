@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // On success, redirecting is handled gracefully by the state observer below
             } catch (error) {
                 console.error("Login failure: ", error.message);
-                if (errorMsg) errorMsg.textContent = 'Invalid portal credentials. Check email/password.';
+                if (errorMsg) errorMsg.textContent = 'Invalid Email or Password. Check email/password.';
             }
         });
     }
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (user && window.location.pathname.includes('dashboard.html')) {
             try {
                 // Hardcoded fallback admin account check
-                if (user.email === "admin@imatt.edu") {
+                if (user.email === "diarraanime44@gmail.com") {
                     currentUserRole = "admin";
                     currentUserData = { name: "System Administrator", email: user.email };
                     renderDashboardView();
