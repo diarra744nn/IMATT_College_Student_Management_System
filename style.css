@@ -72,7 +72,39 @@ body.login-body {
     border-radius: 50%;
 }
 
-.brand-header h2 { color: #111827; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.4rem; }
+.brand-header .brand-header h1{
+    color:#ffffff;
+    font-size:2.8rem;
+    font-weight:800;
+    margin:15px 0 8px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+
+    text-shadow:
+        0 3px 8px rgba(0,0,0,.45),
+        0 0 20px rgba(194,39,45,.35);
+}
+
+.brand-header h4{
+    color:#ffffff;
+    font-size:1.2rem;
+    font-weight:600;
+    margin-bottom:18px;
+
+    text-shadow:
+        0 2px 6px rgba(0,0,0,.35);
+}
+
+.brand-header .motto{
+    color:#ffffff;
+    font-size:1rem;
+    font-style:italic;
+    margin-bottom:2rem;
+    opacity:.95;
+
+    text-shadow:
+        0 2px 5px rgba(0,0,0,.35);
+}
 .brand-header .motto { font-size: 0.95rem; font-style: italic; color: #64748b; margin-bottom: 2rem; }
 
 .input-container { position: relative; margin-bottom: 1.2rem; width: 100%; }
