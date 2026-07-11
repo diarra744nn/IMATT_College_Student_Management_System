@@ -3,20 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMATT College Portal | Management Dashboard</title>
+    <title>IMATT Portal Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Small helper to hide unauthorized sections before JavaScript detects the role */
-        .role-section { display: none; }
-    </style>
 </head>
 <body class="dashboard-body">
 
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <img src="ic.png" alt="IMATT Logo" class="sidebar-logo">
-            <span id="portalRoleTitle">PORTAL SYSTEM</span>
+            <div class="sidebar-logo">🏛️</div>
+            <span id="portalRoleTitle">PORTAL</span>
         </div>
         
         <nav class="sidebar-menu" id="dynamicMenu">
@@ -24,146 +20,234 @@
 
         <div class="sidebar-quote">
             <i class="fa-solid fa-quote-left"></i>
-            <p>Discipline today, freedom tomorrow.</p>
+            <p>Education is the passport to the future, for tomorrow belongs to those who prepare for it today.</p>
         </div>
-        
-        <a href="login.html" id="logoutBtn" class="btn-logout-sidebar"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+
+        <a href="#" class="btn-logout-sidebar" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </a>
     </aside>
 
     <main class="main-content">
         <header class="content-header">
             <div class="welcome-text">
-                <h2 id="welcomeUserName">Welcome back! 👋</h2>
-                <p id="welcomeUserSub">Loading your dashboard environment...</p>
-            </div>
-            <div class="header-controls">
-                <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
-                <div class="dropdown-pill">
-                    <span>Spring 2026</span> <i class="fa-solid fa-chevron-down"></i>
-                </div>
+                <h2 id="welcomeUserName">Loading profile...</h2>
+                <p id="welcomeUserSub">Verifying academic access levels...</p>
             </div>
         </header>
 
-        <div id="adminWorkspace" class="role-section workspace-grid">
-            <section class="panel form-panel">
-                <h3><i class="fa-solid fa-user-plus"></i> Register Portal Account</h3>
+        <div class="workspace-grid" id="adminWorkspace" style="display: none;">
+            <div class="panel form-panel">
+                <h3><i class="fa-solid fa-user-plus"></i> Provision Portal Profile</h3>
                 <form id="adminUserForm">
                     <div class="form-group">
-                        <label for="regRole">Account Type / Role</label>
-                        <select id="regRole" required style="width: 100%; padding: 0.85rem 1rem; background-color: var(--bg-dark-panel); border: 1px solid #26334d; border-radius: 12px; color: var(--text-primary); font-size: 0.95rem;">
-                            <option value="" disabled selected>Choose Account Class</option>
-                            <option value="lecturer">Lecturer</option>
-                            <option value="student">Student</option>
+                        <label>Account Role Matrix</label>
+                        <select id="regRole" style="width:100%; padding:0.85rem; background:var(--bg-dark-panel); border:1px solid #26334d; border-radius:12px; color:white;">
+                            <option value="lecturer">Lecturer / Academic Staff</option>
+                            <option value="student">Enrolled Student Cohort</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="regId">ID Number</label>
-                        <input type="text" id="regId" required placeholder="e.g., IC-2026-091">
+                        <label>Identification ID (e.g. IMATT-2026)</label>
+                        <input type="text" id="regId" placeholder="Enter registration code" required>
                     </div>
                     <div class="form-group">
-                        <label for="regName">Full Name</label>
-                        <input type="text" id="regName" required placeholder="Enter name">
+                        <label>Full Display Name</label>
+                        <input type="text" id="regName" placeholder="Enter true full name" required>
                     </div>
                     <div class="form-group">
-                        <label for="regEmail">Email Address</label>
-                        <input type="email" id="regEmail" required placeholder="user@imatt.edu">
+                        <label>Campus Email Address</label>
+                        <input type="email" id="regEmail" placeholder="user@imatt.edu" required>
                     </div>
-                    <button type="submit" class="btn btn-action-glow">Add Account Profile</button>
+                    <button type="submit" class="btn-action-glow">Provision Database Document</button>
                 </form>
-            </section>
+            </div>
 
-            <section class="panel data-panel">
-                <h3><i class="fa-solid fa-bullhorn"></i> Post Campus Notice</h3>
+            <div class="panel form-panel">
+                <h3><i class="fa-solid fa-bullhorn"></i> Broadcast Campus Notice</h3>
                 <form id="adminNoticeForm">
                     <div class="form-group">
-                        <label for="noticeTitle">Notice Title</label>
-                        <input type="text" id="noticeTitle" required placeholder="e.g., Mid-Semester Exam Schedule">
+                        <label>Bulletin Title Notice</label>
+                        <input type="text" id="noticeTitle" placeholder="e.g., End of Semester Exam Schedule" required>
                     </div>
                     <div class="form-group">
-                        <label for="noticeBody">Announcement Details</label>
-                        <input type="text" id="noticeBody" required placeholder="Type announcement message here...">
+                        <label>Announcement Content Body</label>
+                        <textarea id="noticeBody" rows="5" placeholder="Write message description here..." required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-action-glow" style="background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%); box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);">Broadcast Notice</button>
+                    <button type="submit" class="btn-action-glow" style="background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%); box-shadow: 0 4px 14px rgba(251, 146, 60, 0.4);">Publish Announcement Feed</button>
                 </form>
-            </section>
+            </div>
         </div>
 
-        <div id="lecturerWorkspace" class="role-section workspace-grid">
-            <section class="panel form-panel">
-                <h3><i class="fa-solid fa-book-bookmark"></i> Create New Module</h3>
-                <form id="lecturerModuleForm">
-                    <div class="form-group">
-                        <label for="modCode">Module Code</label>
-                        <input type="text" id="modCode" required placeholder="e.g., COMP-302">
-                    </div>
-                    <div class="form-group">
-                        <label for="modName">Module Title</label>
-                        <input type="text" id="modName" required placeholder="e.g., Web Programming">
-                    </div>
-                    <button type="submit" class="btn btn-action-glow">Add Module Track</button>
-                </form>
-                
-                <hr style="border: 0; border-top: 1px solid #26334d; margin: 2rem 0;">
-
-                <h3><i class="fa-solid fa-user-tag"></i> Assign Student to Module</h3>
-                <form id="lecturerAssignStudentForm">
-                    <div class="form-group">
-                        <label for="assignMod">Select Module</label>
-                        <select id="assignMod" required style="width: 100%; padding: 0.85rem 1rem; background-color: var(--bg-dark-panel); border: 1px solid #26334d; border-radius: 12px; color: var(--text-primary); font-size: 0.95rem;"></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="assignStuId">Student ID</label>
-                        <input type="text" id="assignStuId" required placeholder="IC-2026-091">
-                    </div>
-                    <div class="form-group">
-                        <label for="assignStuName">Student Full Name</label>
-                        <input type="text" id="assignStuName" required placeholder="Ibrahima Diarra">
-                    </div>
-                    <div class="form-group">
-                        <label for="assignStuEmail">Student Email Address</label>
-                        <input type="email" id="assignStuEmail" required placeholder="student@imatt.edu">
-                    </div>
-                    <div class="form-group">
-                        <label for="assignStuYear">Academic Year</label>
-                        <input type="text" id="assignStuYear" required placeholder="e.g., Year 3">
-                    </div>
-                    <button type="submit" class="btn btn-action-glow" style="background: linear-gradient(135deg, #34d399 0%, #059669 100%); box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4);">Enroll Student</button>
-                </form>
-            </section>
-
-            <section class="panel data-panel" id="lecturerActiveModuleView">
-                <h3><i class="fa-solid fa-graduation-cap"></i> Select a Module to Manage</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Module Code</th>
-                                <th>Module Name</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lecturerModulesTableBody"></tbody>
-                    </table>
+        <div class="workspace-grid" id="lecturerWorkspace" style="display: none;">
+            <div id="lecturerActiveModuleView">
+                <div class="panel form-panel">
+                    <h3><i class="fa-solid fa-folder-plus"></i> Spin Up Module Track</h3>
+                    <form id="lecturerModuleForm">
+                        <div class="form-group">
+                            <label>Module Alpha-Numeric Code</label>
+                            <input type="text" id="modCode" placeholder="e.g., COMP-311" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Module Structural Name</label>
+                            <input type="text" id="modName" placeholder="e.g., Advanced Database Systems" required>
+                        </div>
+                        <button type="submit" class="btn-action-glow">Generate Track Entry</button>
+                    </form>
                 </div>
-            </section>
+
+                <div class="panel form-panel">
+                    <h3><i class="fa-solid fa-link"></i> Assign & Enroll Student</h3>
+                    <form id="lecturerAssignStudentForm">
+                        <div class="form-group">
+                            <label>Select Target Module Course</label>
+                            <select id="assignMod" style="width:100%; padding:0.85rem; background:var(--bg-dark-panel); border:1px solid #26334d; border-radius:12px; color:white;"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Student Official ID Reference</label>
+                            <input type="text" id="assignStuId" placeholder="e.g., IMATT-8842" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Student Full Name</label>
+                            <input type="text" id="assignStuName" placeholder="Enter student name matching dashboard profile" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Student Email Address</label>
+                            <input type="email" id="assignStuEmail" placeholder="student@imatt.edu" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Academic Intake Level Year</label>
+                            <input type="text" id="assignStuYear" placeholder="e.g., Year 3 / Semester 1" required>
+                        </div>
+                        <button type="submit" class="btn-action-glow" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);">Link Cohort Enrollment</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel-column-stack">
+                <div class="panel data-panel">
+                    <h3><i class="fa-solid fa-graduation-cap"></i> Registered Modules Ecosystem</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Title Name</th>
+                                    <th>Operations</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lecturerModulesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel form-panel">
+                    <h3><i class="fa-solid fa-file-shield"></i> Issue Module Study Notes & Assignments</h3>
+                    <form id="lecturerResourceForm">
+                        <div class="form-group">
+                            <label>Target Course Reference Module</label>
+                            <select id="resMod" style="width:100%; padding:0.85rem; background:var(--bg-dark-panel); border:1px solid #26334d; border-radius:12px; color:white;"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Resource Delivery Type</label>
+                            <select id="resType" style="width:100%; padding:0.85rem; background:var(--bg-dark-panel); border:1px solid #26334d; border-radius:12px; color:white;">
+                                <option value="Note">Class Study Notes (PDF Link)</option>
+                                <option value="Assignment">New Assignment Brief</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Resource Title</label>
+                            <input type="text" id="resTitle" placeholder="e.g., Lecture 4 - Normalization.pdf" required>
+                        </div>
+                        <div class="form-group">
+                            <label>External URL Asset Link</label>
+                            <input type="url" id="resUrl" placeholder="https://drive.google.com/... or cloud storage asset link" required>
+                        </div>
+                        <button type="submit" class="btn-action-glow" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">Publish Academic Resource Asset</button>
+                    </form>
+                </div>
+
+                <div class="panel form-panel">
+                    <h3><i class="fa-solid fa-signature"></i> Publish Student Grade Assessment Record</h3>
+                    <form id="lecturerGradeForm">
+                        <div class="form-group">
+                            <label>Course Module Track</label>
+                            <select id="gradeMod" style="width:100%; padding:0.85rem; background:var(--bg-dark-panel); border:1px solid #26334d; border-radius:12px; color:white;"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Target Student Email Reference</label>
+                            <input type="email" id="gradeStuEmail" placeholder="student@imatt.edu" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Assessment Grade Score</label>
+                            <input type="text" id="gradeValue" placeholder="e.g., 85% (A) or Excellent Progress" required>
+                        </div>
+                        <button type="submit" class="btn-action-glow" style="background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);">Publish Ledger Grade Entry</button>
+                    </form>
+                </div>
+
+                <div class="panel data-panel">
+                    <h3><i class="fa-solid fa-bullhorn"></i> Campus Bulletin Notice Board</h3>
+                    <div class="notice-board-feed" id="lecturerNoticeFeed"></div>
+                </div>
+            </div>
         </div>
 
-        <div id="studentWorkspace" class="role-section workspace-grid" style="grid-template-columns: 1fr;">
-            <section class="panel data-panel">
-                <h3><i class="fa-solid fa-layer-group"></i> My Enrolled Course Modules</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Module Code</th>
-                                <th>Module Title</th>
-                                <th>Lecturer Email</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentModulesTableBody"></tbody>
-                    </table>
+        <div class="workspace-grid" id="studentWorkspace" style="display: none;">
+            <div class="panel-column-stack">
+                <div class="panel data-panel">
+                    <h3><i class="fa-solid fa-book-open-reader"></i> My Active Enrolled Module Tracks</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Module Code</th>
+                                    <th>Course Title Name</th>
+                                    <th>Assigned Lecturer</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentModulesTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
-            </section>
+
+                <div class="panel data-panel">
+                    <h3><i class="fa-solid fa-file-invoice"></i> My Study Materials & Coursework Briefs</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Course Track</th>
+                                    <th>Category Asset</th>
+                                    <th>Resource Title Name</th>
+                                    <th>Action Link</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentResourceTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel data-panel">
+                    <h3><i class="fa-solid fa-chart-line"></i> Academic Assessment Performance & Grades</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Module Code</th>
+                                    <th>Performance Grade Mark</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentGradeTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel data-panel">
+                <h3><i class="fa-solid fa-bullhorn"></i> Official Campus Announcements Feed</h3>
+                <div class="notice-board-feed" id="studentNoticeFeed"></div>
+            </div>
         </div>
 
     </main>
