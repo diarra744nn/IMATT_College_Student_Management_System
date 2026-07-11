@@ -31,7 +31,7 @@ html, body {
 * { box-sizing: border-box; }
 
 /* ================================================================= */
-/* 2. LIGHT CONTAINER LOGIN VIEW (CENTERED OVER GRADIANT)            */
+/* 2. LIGHT CONTAINER LOGIN VIEW (CENTERED OVER GRADIENT)            */
 /* ================================================================= */
 body.login-body { 
     display: flex; 
@@ -75,7 +75,6 @@ body.login-body {
     border-radius: 50%;
 }
 
-/* Updated selector to cleanly catch h2 in login.html */
 .brand-header h2 {
     color: #913d40;
     font-size: 2.2rem;
@@ -143,16 +142,8 @@ body.dashboard-body {
     margin-bottom: 2.5rem;
 }
 
-.sidebar-logo {
-    font-size: 1.5rem;
-}
-
-.sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    flex-grow: 1;
-}
+.sidebar-logo { font-size: 1.5rem; }
+.sidebar-menu { display: flex; flex-direction: column; gap: 0.4rem; flex-grow: 1; }
 
 .menu-item {
     display: flex;
@@ -167,21 +158,9 @@ body.dashboard-body {
     transition: all 0.2s ease;
     cursor: pointer;
 }
-
-.menu-item i {
-    font-size: 1.1rem;
-    width: 20px;
-}
-
-.menu-item:hover, .menu-item.active {
-    color: var(--text-primary);
-    background-color: rgba(124, 77, 255, 0.15);
-}
-
-.menu-item.active {
-    background-color: #251b4d;
-    color: #a78bfa;
-}
+.menu-item i { font-size: 1.1rem; width: 20px; }
+.menu-item:hover, .menu-item.active { color: var(--text-primary); background-color: rgba(124, 77, 255, 0.15); }
+.menu-item.active { background-color: #251b4d; color: #a78bfa; }
 
 .sidebar-quote {
     background: rgba(255, 255, 255, 0.03);
@@ -209,7 +188,7 @@ body.dashboard-body {
 .btn-logout-sidebar:hover { background: rgba(239, 68, 68, 0.18); }
 
 /* ================================================================= */
-/* 4. CONTENT WRAPPERS, MODULE TABLES & NOTICE SHEETS               */
+/* 4. WRAPPERS, RESPONSIVE TABLES & NOTICE CARDS                     */
 /* ================================================================= */
 .main-content {
     flex-grow: 1;
@@ -218,9 +197,7 @@ body.dashboard-body {
     overflow-y: auto;
 }
 
-.content-header {
-    margin-bottom: 2.5rem;
-}
+.content-header { margin-bottom: 2.5rem; }
 .welcome-text h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; margin-top: 0; }
 .welcome-text p { color: var(--text-muted); font-size: 0.95rem; margin: 0; }
 
@@ -307,7 +284,6 @@ td { padding: 1rem; border-bottom: 1px solid #1e293b; font-size: 0.95rem; color:
 
 .error-msg { color: #f87171; font-size: 0.85rem; margin-top: 1rem; text-align: center; }
 
-/* Real-time Campus Notices Layout Elements */
 .notice-board-feed { display: flex; flex-direction: column; gap: 1rem; }
 .notice-strip { background: var(--bg-dark-panel); padding: 1.25rem; border-radius: 14px; border-left: 4px solid var(--glow-orange); }
 .notice-strip h4 { margin: 0 0 0.5rem 0; color: #ffffff; font-size: 1.05rem; font-weight: 700; }
@@ -315,7 +291,7 @@ td { padding: 1rem; border-bottom: 1px solid #1e293b; font-size: 0.95rem; color:
 .notice-date { font-size: 0.75rem; color: var(--glow-orange); font-weight: 600; display: block; }
 
 /* ================================================================= */
-/* 5. POWERFUL MOBILE RESPONSIVE STRUCTURES TRANSITIONS             */
+/* 5. PHONE DISPLAY RESPONSIVE BREAKPOINT ALIGNMENTS                */
 /* ================================================================= */
 @media (max-width: 1100px) {
     .workspace-grid { grid-template-columns: 1fr !important; }
