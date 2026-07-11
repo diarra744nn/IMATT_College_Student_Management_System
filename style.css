@@ -72,40 +72,30 @@ body.login-body {
     border-radius: 50%;
 }
 
-.brand-header h1{
-    color:#913d40;
-    font-size:2.8rem;
-    font-weight:800;
-    margin:15px 0 8px;
-    text-transform:uppercase;
-    letter-spacing:2px;
-
-    text-shadow:
-        0 3px 8px rgba(0,0,0,.45),
-        0 0 20px rgba(194,39,45,.35);
+.brand-header h1 {
+    color: #913d40;
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin: 15px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 3px 8px rgba(0,0,0,.45), 0 0 20px rgba(194,39,45,.35);
 }
 
-.brand-header h4{
-    color:#000000;
-    font-size:1.2rem;
-    font-weight:600;
-    margin-bottom:18px;
-
-    text-shadow:
-        0 2px 6px rgba(0,0,0,.35);
+.brand-header h4 {
+    color: #000000;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+    text-shadow: 0 2px 6px rgba(0,0,0,.35);
 }
 
-.brand-header .motto{
-    color:#ffffff;
-    font-size:1rem;
-    font-style:italic;
-    margin-bottom:2rem;
-    opacity:.95;
-
-    text-shadow:
-        0 2px 5px rgba(0,0,0,.35);
+.brand-header .motto { 
+    font-size: 0.95rem; 
+    font-style: italic; 
+    color: #64748b; 
+    margin-bottom: 2rem; 
 }
-.brand-header .motto { font-size: 0.95rem; font-style: italic; color: #64748b; margin-bottom: 2rem; }
 
 .input-container { position: relative; margin-bottom: 1.2rem; width: 100%; }
 .input-icon { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1.1rem; }
@@ -126,7 +116,6 @@ body.dashboard-body {
     overflow-x: hidden;
 }
 
-/* Sidebar structure panel container layout */
 .sidebar {
     width: 260px;
     background-color: var(--bg-dark-surface);
@@ -139,10 +128,10 @@ body.dashboard-body {
 
 .sidebar-brand {
     display: flex;
-    align-items: center; /* Vertically centers the logo with the text */
-    gap: 0.75rem;        /* Adds clean spacing between the image and text */
+    align-items: center;
+    gap: 0.75rem;        
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.95rem;
     letter-spacing: 0.5px;
     margin-bottom: 2.5rem;
 }
@@ -151,8 +140,8 @@ body.dashboard-body {
     height: 35px;
     width: 35px;
     object-fit: cover;
-    border-radius: 8px;  /* Smoothly rounds the corners of the image */
-    background: #ffffff; /* Gives it a crisp white background base */
+    border-radius: 8px;  
+    background: #ffffff; 
     padding: 2px;
 }
 
@@ -174,6 +163,7 @@ body.dashboard-body {
     font-size: 0.95rem;
     border-radius: 12px;
     transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .menu-item i {
@@ -262,13 +252,12 @@ body.dashboard-body {
 .card-value { font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem; }
 .card-subtitle { font-size: 0.8rem; color: var(--text-muted); }
 
-/* Apply individual unique theme color accents to widgets */
 .card-purple .card-icon { color: var(--glow-purple); }
 .card-blue .card-icon { color: var(--glow-blue); }
 .card-green .card-icon { color: var(--glow-green); }
 .card-orange .card-icon { color: var(--glow-orange); }
 
-/* Lower Workspace Alignment Panels Grid Grid */
+/* Lower Workspace Alignment Panels Grid */
 .workspace-grid {
     display: grid;
     grid-template-columns: 1fr 1.8fr;
@@ -277,75 +266,4 @@ body.dashboard-body {
 }
 
 .panel {
-    background-color: var(--bg-dark-surface);
-    border-radius: 24px;
-    padding: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-.panel h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-/* Operational Data Input Systems Form Design elements */
-.form-panel h3 i { color: var(--glow-blue); }
-.data-panel h3 i { color: var(--glow-purple); }
-
-.form-group { margin-bottom: 1.25rem; }
-.form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
-.form-group input { width: 100%; padding: 0.85rem 1rem; background-color: var(--bg-dark-panel); border: 1px solid #26334d; border-radius: 12px; color: var(--text-primary); font-size: 0.95rem; }
-.form-group input:focus { outline: none; border-color: var(--glow-blue); }
-
-.btn-action-glow {
-    width: 100%;
-    padding: 0.9rem;
-    background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
-    color: var(--white);
-    border: none;
-    border-radius: 14px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(109, 40, 217, 0.4);
-    transition: transform 0.2s;
-}
-.btn-action-glow:hover { transform: translateY(-1px); }
-
-/* Custom Registry Data Presentation Display Tables */
-.table-container { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; text-align: left; }
-th { padding: 1rem; border-bottom: 2px solid #1e293b; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
-td { padding: 1rem; border-bottom: 1px solid #1e293b; font-size: 0.95rem; color: #e2e8f0; }
-
-.btn-danger {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.2s;
-}
-.btn-danger:hover { background: rgba(239, 68, 68, 0.3); }
-
-.error-msg { color: #f87171; font-size: 0.85rem; margin-top: 1rem; }
-
-/* --- Responsive Breakpoint Structure Adaptations --- */
-@media (max-width: 1100px) {
-    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
-    .workspace-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 768px) {
-    body.dashboard-body { flex-direction: column; }
-    .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #1e293b; }
-    .main-content { max-width: 100%; padding: 1.5rem; }
-    .metrics-grid { grid-template-columns: 1fr; }
-}
+    background-
