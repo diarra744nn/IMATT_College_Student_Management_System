@@ -32,7 +32,8 @@
             <p>Discipline today, freedom tomorrow.</p>
         </div>
         
-        <a href="/api/logout" class="btn-logout-sidebar"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        <!-- FIXED: Added id="logoutBtn" and changed href to handle local routing -->
+        <a href="login.html" id="logoutBtn" class="btn-logout-sidebar"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </aside>
 
     <main class="main-content">
@@ -115,13 +116,15 @@
                             </tr>
                         </thead>
                         <tbody id="studentTableBody">
-                            </tbody>
+                            <!-- Firebase data will populate here -->
+                        </tbody>
                     </table>
                 </div>
             </section>
         </div>
     </main>
 
-    <script src="main.js"></script>
+    <!-- CRITICAL FIX: type="module" added -->
+    <script type="module" src="main.js"></script>
 </body>
 </html>
