@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Hardcoded fallback admin account check
                 if (user.email === "diarraanime44@gmail.com") {
                     currentUserRole = "admin";
-                    currentUserData = { name: "System Administrator", email: user.email };
+                    currentUserData = { name: "Mr. Diarra", email: user.email };
                     renderDashboardView();
                     return;
                 }
